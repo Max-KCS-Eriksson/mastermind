@@ -46,6 +46,7 @@ class Mastermind:
             print(f"### ROUND {self.round} ###")
             # Determine who will create a code for their opponent to break.
             # Roles are switched each turn.
+
             # Player tries to break the computers code.
             if self.round % 2 != 0:
 
@@ -90,6 +91,9 @@ class Mastermind:
                     self.player.score += 1
                     print("\nCongratulations, you cracked the code!\n")
 
+                    # Reset turn.
+                    self.turn = 0
+
             # Computer tries to break the players code.
             else:
 
@@ -110,15 +114,15 @@ class Mastermind:
 
                     # Computer try to crack the code.
                     guess = self.computer.guess_code(
-                        self.code_length, self.allowed_numbers
-                    )
+                        guess_feedback, self.allowed_numbers
+                    )  # TODO
 
-                    subprocess.run(CLEAR_CLI)
+                    # subprocess.run(CLEAR_CLI)
                     # Give feedback about the guess.
                     guess_feedback = self._get_guess_feedback(
                         code, guess, guess_feedback
                     )
-                    print("Your guess:")
+                    print("Computer's guess:")
                     print(guess)
                     print("Correctly guessed values:")
                     print(guess_feedback)
@@ -132,7 +136,10 @@ class Mastermind:
                 if code_cracked:
                     self.round += 1
                     self.computer.score += 1
-                    print("\nCongratulations, you cracked the code!\n")
+                    print("\nThe computer has cracked your code!\n")
+
+                    # Reset turn.
+                    self.turn = 0
 
             print("Would you like to switch roles and play another round?\n(y/n)")
             another_round = input("> ").lower()
