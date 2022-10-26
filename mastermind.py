@@ -48,10 +48,11 @@ class Mastermind:
             # Roles are switched each turn.
 
             # Player tries to break the computers code.
-            if self.round % 2 != 0:
+            if self.round % 2 == 0:
 
                 # Create list of single whitespace characters to represent uncracked code.
                 guess_feedback = [" " for i in range(self.code_length)]
+                wrong_index_for_number = None
 
                 # Computer creates a code.
                 code = self.computer.create_code(self.code_length, self.allowed_numbers)
@@ -64,7 +65,7 @@ class Mastermind:
                     print(f"\n--- TURN  {self.turn} ---")
 
                     # Player try to crack the code.
-                    print("Try to crack the computers code.")
+                    print("\nTry to crack the computers code.\n")
                     print(rules_info)
                     guess = self.player.guess_code(
                         self.code_length, self.allowed_numbers
@@ -72,8 +73,8 @@ class Mastermind:
 
                     subprocess.run(CLEAR_CLI)
                     # Give feedback about the guess.
-                    guess_feedback = self._get_guess_feedback(
-                        code, guess, guess_feedback
+                    guess_feedback, wrong_index_for_number = self._get_guess_feedback(
+                        code, guess, guess_feedback, wrong_index_for_number
                     )
                     print("Your guess:")
                     print(guess)
@@ -99,9 +100,11 @@ class Mastermind:
 
                 # Create list of single whitespace characters to represent uncracked code.
                 guess_feedback = [" " for i in range(self.code_length)]
+                # Used fot he computer to evaluate what number to place where in the guess.
+                wrong_index_for_number = None
 
                 # Player creates a code.
-                print("Create a code for the computer to crack.")
+                print("\nCreate a code for the computer to crack.\n")
                 print(rules_info)
                 code = self.player.create_code(self.code_length, self.allowed_numbers)
                 code_cracked = False
@@ -114,13 +117,13 @@ class Mastermind:
 
                     # Computer try to crack the code.
                     guess = self.computer.guess_code(
-                        guess_feedback, self.allowed_numbers
+                        guess_feedback, wrong_index_for_number, self.allowed_numbers
                     )  # TODO
 
                     # subprocess.run(CLEAR_CLI)
                     # Give feedback about the guess.
-                    guess_feedback = self._get_guess_feedback(
-                        code, guess, guess_feedback
+                    guess_feedback, wrong_index_for_number = self._get_guess_feedback(
+                        code, guess, guess_feedback, wrong_index_for_number
                     )
                     print("Computer's guess:")
                     print(guess)
@@ -150,7 +153,9 @@ class Mastermind:
                 print("\nThank you for playing =)\n")
                 break
 
-    def _get_guess_feedback(self, code, guess, code_crack_progress):
+    def _get_guess_feedback(
+        self, code, guess, code_crack_progress, wrong_index_for_number=None
+    ):
         """
         Gives feedback about the codebreaker's guess.
         Tells if a value in given list argument for the guess parameter is in its the
@@ -160,15 +165,21 @@ class Mastermind:
         with changes index values to indicate where correctly guessed values have
         been places.
         """
-        for i, _ in enumerate(guess):
+        if wrong_index_for_number is None:
+            wrong_index_for_number = {}
+
+        for i, number in enumerate(guess):
             # Check if each value of the guess is in the right place.
             if guess[i] == code[i]:
                 code_crack_progress[i] = code[i]
             # Check if each guess value is in the code, but in the wrong place.
-            elif guess[i] in code:
-                print(f"The value {guess[i]} is in the code, but not in the index {i}.")
+            elif number in code:
+                print(f"The value {number} is in the code, but not in the index {i}.")
+                # Add wrongly guessed index to set value of guessed number key.
+                wrong_index_for_number.setdefault(number, set())
+                wrong_index_for_number[number].add(i)
 
-        return code_crack_progress
+        return code_crack_progress, wrong_index_for_number
 
 
 if __name__ == "__main__":
