@@ -19,7 +19,12 @@ class Computer(Player):
         return randint(allowed_numbers[0], allowed_numbers[-1])
 
     def guess_code(
-        self, code_length, code_crack_progress, wrong_index_for_number, allowed_numbers
+        self,
+        code_length,
+        code_crack_progress,
+        wrong_index_for_number,
+        allowed_numbers,
+        numbers_not_in_code,
     ):
         """Computer tries to break the code created by the player.
         Explain stages of tactic.
@@ -55,41 +60,45 @@ class Computer(Player):
                     for key in wrong_index_for_number.keys():
 
                         if code_index not in wrong_index_for_number[key]:
+                            # if code_index not in wrong_index_for_number[key]:
                             # Number has not been attempted to be placed here.
-                            print("*DEBUG*\tN in cracked code:", number)  # TODO: Remove
-                            print("*DEBUG*\tcode_index:", code_index)  # TODO: Remove
-                            print("*DEBUG*\tnumber:", key)  # TODO: Remove
-                            print(
-                                "*DEBUG*\ttried indices:", wrong_index_for_number[key]
-                            )  # TODO: Remove
-                            print()
-
                             number = key
-                            print(
-                                "*DEBUG*\tguessed number:",
-                                number,
-                                "for code index:",
-                                code_index,
-                                "\n",
-                            )  # TODO: Remove
+                            # print(
+                            #     "*DEBUG*\tguessing number:",
+                            #     number,
+                            #     "for code index:",
+                            #     code_index,
+                            # )  # TODO: Remove
 
-                        elif code_index in wrong_index_for_number[key]:
-                            # No misplaced numbers to try for index in opponent's code.
-                            number = self.previous_max_guessed_number
+                            break
 
-                            print(
-                                "*DEBUG*\tguessed number:",
-                                number,
-                                "for code index:",
-                                code_index,
-                                "\n",
-                            )  # TODO: Remove
+                    else:
+                        # No misplaced numbers to try for index in opponent's code.
+                        print("*DEBUG* No misplaced number to try.")  # TODO: Remove
+                        number = (
+                            self.previous_max_guessed_number
+                        )  # TODO: Doesn't work correctly
+
+                        print(
+                            "*DEBUG*\tguessed number:",
+                            number,
+                            "for code index:",
+                            code_index,
+                        )  # TODO: Remove
+
+                print(
+                    "*DEBUG* placing number:", number, "on code index:", code_index
+                )  # TODO: Remove
+                print()  # TODO: Remove
+                # Check if previous feedback has reviled that number is not in code.
+                if number in numbers_not_in_code:
+                    # To not guess same wrong number every turn.
+                    number += 1
 
                 guess.append(number)
 
             # Update highest number guessed.
-            self.previous_max_guessed_number += 1
-
+            # self.previous_max_guessed_number += 1
             print(
                 "*DEBUG* previous_max_guessed_number:",
                 self.previous_max_guessed_number,
