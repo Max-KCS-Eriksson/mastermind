@@ -53,6 +53,7 @@ class Mastermind:
                 # Create list of single whitespace characters to represent uncracked code.
                 guess_feedback = [" " for i in range(self.code_length)]
                 wrong_index_for_number = None
+                numbers_not_in_code = None
 
                 # Computer creates a code.
                 code = self.computer.create_code(self.code_length, self.allowed_numbers)
@@ -73,8 +74,16 @@ class Mastermind:
 
                     subprocess.run(CLEAR_CLI)
                     # Give feedback about the guess.
-                    guess_feedback, wrong_index_for_number = self._get_guess_feedback(
-                        code, guess, guess_feedback, wrong_index_for_number
+                    (
+                        guess_feedback,
+                        wrong_index_for_number,
+                        numbers_not_in_code,
+                    ) = self._get_guess_feedback(
+                        code,
+                        guess,
+                        guess_feedback,
+                        wrong_index_for_number,
+                        numbers_not_in_code,
                     )
                     print("Your guess:")
                     print(guess)
@@ -102,6 +111,7 @@ class Mastermind:
                 guess_feedback = [" " for i in range(self.code_length)]
                 # Used fot he computer to evaluate what number to place where in the guess.
                 wrong_index_for_number = None
+                numbers_not_in_code = None
 
                 # Player creates a code.
                 print("\nCreate a code for the computer to crack.\n")
@@ -124,15 +134,27 @@ class Mastermind:
                         guess_feedback,
                         wrong_index_for_number,
                         self.allowed_numbers,
+                        numbers_not_in_code,
                     )  # TODO
 
                     # subprocess.run(CLEAR_CLI)
                     # Give feedback about the guess.
-                    guess_feedback, wrong_index_for_number = self._get_guess_feedback(
-                        code, guess, guess_feedback, wrong_index_for_number
+                    (
+                        guess_feedback,
+                        wrong_index_for_number,
+                        numbers_not_in_code,
+                    ) = self._get_guess_feedback(
+                        code,
+                        guess,
+                        guess_feedback,
+                        wrong_index_for_number,
+                        numbers_not_in_code,
                     )
                     print(
                         "*DEBUG*\tMisplaced numbers:", wrong_index_for_number
+                    )  # TODO: Remove after debugging.
+                    print(
+                        "*DEBUG*\tNumbers not in code:", numbers_not_in_code
                     )  # TODO: Remove after debugging.
                     print("Player's code:")
                     print(code)
@@ -165,7 +187,12 @@ class Mastermind:
                 break
 
     def _get_guess_feedback(
-        self, code, guess, code_crack_progress, wrong_index_for_number=None
+        self,
+        code,
+        guess,
+        code_crack_progress,
+        wrong_index_for_number=None,
+        numbers_not_in_code=None,
     ):
         """
         Gives feedback about the codebreaker's guess.
@@ -178,6 +205,8 @@ class Mastermind:
         """
         if wrong_index_for_number is None:
             wrong_index_for_number = {}
+        if numbers_not_in_code is None:
+            numbers_not_in_code = set()
 
         for i, number in enumerate(guess):
             # Check if each value of the guess is in the right place.
@@ -189,8 +218,11 @@ class Mastermind:
                 # Add wrongly guessed index to set value of guessed number key.
                 wrong_index_for_number.setdefault(number, set())
                 wrong_index_for_number[number].add(i)
+            # CNumber not in code at all.
+            else:
+                numbers_not_in_code.add(number)
 
-        return code_crack_progress, wrong_index_for_number
+        return code_crack_progress, wrong_index_for_number, numbers_not_in_code
 
 
 if __name__ == "__main__":
