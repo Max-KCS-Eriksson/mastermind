@@ -135,7 +135,7 @@ class Mastermind:
                         wrong_index_for_number,
                         self.allowed_numbers,
                         numbers_not_in_code,
-                    )  # TODO
+                    )
 
                     # subprocess.run(CLEAR_CLI)
                     # Give feedback about the guess.
@@ -150,12 +150,7 @@ class Mastermind:
                         wrong_index_for_number,
                         numbers_not_in_code,
                     )
-                    print(
-                        "*DEBUG*\tMisplaced numbers:", wrong_index_for_number
-                    )  # TODO: Remove after debugging.
-                    print(
-                        "*DEBUG*\tNumbers not in code:", numbers_not_in_code
-                    )  # TODO: Remove after debugging.
+
                     print("Player's code:")
                     print(code)
                     print("Computer's guess:")

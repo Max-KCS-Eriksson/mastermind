@@ -7,7 +7,15 @@ class Computer(Player):
     """Computer participant of a game of Mastermind."""
 
     def __init__(self):
-        """Inherits attributes form Player class."""
+        """
+        Inherits attributes form Player class and inits attributes unique to this class.
+
+        The flag attribute first_stage_tactic used to determine what tactic to used when
+        trying to break the opponents code.
+        The previous_max_guessed_number attribute is used to keep track of what the
+        highest number is that the class instance has guessed when trying to break the
+        opponents code. This aids in deciding on what number to guess next.
+        """
         super().__init__()
 
         # Attributes used when computer crack code.
@@ -28,6 +36,12 @@ class Computer(Player):
     ):
         """Computer tries to break the code created by the player.
         Explain stages of tactic.
+
+        In the first stage, the computer places two pair of numbers next to each other
+        to maximize potential intel from feedback.
+        In the second stage, the computer picks numbers for each index of the code based
+        on previously given feedback. This is done by restricting the possible numbers
+        for all indices of the code to be cracked.
         """  # TODO: Docstring
         guess = []
         if self.first_stage_tactic:
@@ -47,10 +61,6 @@ class Computer(Player):
 
         else:
             # Second stage tactic.
-            print(
-                "*DEBUG*\t Entering second stage tactic."
-            )  # TODO: Remove after debug.
-
             for code_index, number in enumerate(code_crack_progress):
                 try:
                     # Check if individual number in code is already placed correctly.
@@ -63,33 +73,13 @@ class Computer(Player):
                             # if code_index not in wrong_index_for_number[key]:
                             # Number has not been attempted to be placed here.
                             number = key
-                            # print(
-                            #     "*DEBUG*\tguessing number:",
-                            #     number,
-                            #     "for code index:",
-                            #     code_index,
-                            # )  # TODO: Remove
 
                             break
 
                     else:
                         # No misplaced numbers to try for index in opponent's code.
-                        print("*DEBUG* No misplaced number to try.")  # TODO: Remove
-                        number = (
-                            self.previous_max_guessed_number
-                        )  # TODO: Doesn't work correctly
+                        number = self.previous_max_guessed_number
 
-                        print(
-                            "*DEBUG*\tguessed number:",
-                            number,
-                            "for code index:",
-                            code_index,
-                        )  # TODO: Remove
-
-                print(
-                    "*DEBUG* placing number:", number, "on code index:", code_index
-                )  # TODO: Remove
-                print()  # TODO: Remove
                 # Check if previous feedback has reviled that number is not in code.
                 if number in numbers_not_in_code:
                     # To not guess same wrong number every turn.
@@ -97,17 +87,13 @@ class Computer(Player):
 
                 guess.append(number)
 
-            # Update highest number guessed.
-            # self.previous_max_guessed_number += 1
-            print(
-                "*DEBUG* previous_max_guessed_number:",
-                self.previous_max_guessed_number,
-            )  # TODO: remove
-
         return guess
 
     def update_code_breaking_tactic(self, code_crack_progress, allowed_numbers):
-        """"""  # TODO: Docstring
+        """
+        Checks if any numbers have been placed correctly, and if so changes the value of
+        the flag attribute first_stage_tactic to False.
+        """
         if self.first_stage_tactic:
             # Check if no numbers have been guessed in right place.
             for number in allowed_numbers:
