@@ -116,8 +116,14 @@ class Mastermind:
                     print(f"\n--- TURN  {self.turn} ---")
 
                     # Computer try to crack the code.
+                    self.computer.update_code_breaking_tactic(
+                        guess_feedback, self.allowed_numbers
+                    )
                     guess = self.computer.guess_code(
-                        guess_feedback, wrong_index_for_number, self.allowed_numbers
+                        self.code_length,
+                        guess_feedback,
+                        wrong_index_for_number,
+                        self.allowed_numbers,
                     )  # TODO
 
                     # subprocess.run(CLEAR_CLI)
@@ -125,6 +131,11 @@ class Mastermind:
                     guess_feedback, wrong_index_for_number = self._get_guess_feedback(
                         code, guess, guess_feedback, wrong_index_for_number
                     )
+                    print(
+                        "*DEBUG*\tMisplaced numbers:", wrong_index_for_number
+                    )  # TODO: Remove after debugging.
+                    print("Player's code:")
+                    print(code)
                     print("Computer's guess:")
                     print(guess)
                     print("Correctly guessed values:")
@@ -144,8 +155,8 @@ class Mastermind:
                     # Reset turn.
                     self.turn = 0
 
-            print("Would you like to switch roles and play another round?\n(y/n)")
-            another_round = input("> ").lower()
+            print("\nWould you like to switch roles and play another round?")
+            another_round = input("(y/n) : ").lower()
             if another_round == "y":
                 subprocess.run(CLEAR_CLI)
                 continue
