@@ -59,9 +59,7 @@ class Mastermind:
                 code = self.computer.create_code(self.code_length, self.allowed_numbers)
                 code_cracked = False
                 while not code_cracked:
-                    # Check that the are more turns to be played.
-                    # Plus one to allow for the last turn to be played.
-                    if self.turn == self.max_turns + 1:
+                    if self._is_out_of_turns():
                         break
                     print(f"\n--- TURN  {self.turn} ---")
 
@@ -97,12 +95,9 @@ class Mastermind:
                     self.turn += 1
 
                 if code_cracked:
-                    self.round += 1
+                    self._handle_finished_round()
                     self.player.score += 1
                     print("\nCongratulations, you cracked the code!\n")
-
-                    # Reset turn.
-                    self.turn = 0
 
             # Computer tries to break the players code.
             else:
@@ -119,9 +114,7 @@ class Mastermind:
                 code = self.player.create_code(self.code_length, self.allowed_numbers)
                 code_cracked = False
                 while not code_cracked:
-                    # Check that the are more turns to be played.
-                    # Plus one to allow for the last turn to be played.
-                    if self.turn == self.max_turns + 1:
+                    if self._is_out_of_turns():
                         break
                     print(f"\n--- TURN  {self.turn} ---")
 
@@ -165,12 +158,9 @@ class Mastermind:
                     self.turn += 1
 
                 if code_cracked:
-                    self.round += 1
+                    self._handle_finished_round()
                     self.computer.score += 1
                     print("\nThe computer has cracked your code!\n")
-
-                    # Reset turn.
-                    self.turn = 0
 
             print("\nWould you like to switch roles and play another round?")
             another_round = input("(y/n) : ").lower()
@@ -218,6 +208,14 @@ class Mastermind:
                 numbers_not_in_code.add(number)
 
         return code_crack_progress, wrong_index_for_number, numbers_not_in_code
+
+    def _is_out_of_turns(self):
+        # Plus one to allow for the last turn to be played.
+        return self.turn == self.max_turns + 1
+
+    def _handle_finished_round(self):
+        self.round += 1
+        self.turn = 0
 
 
 if __name__ == "__main__":
