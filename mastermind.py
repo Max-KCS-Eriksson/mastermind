@@ -1,7 +1,7 @@
 import subprocess
 
-from player import Player
 from computer import Computer
+from player import Player
 
 CLEAR_CLI = "clear"
 
@@ -60,6 +60,7 @@ class Mastermind:
                 code_cracked = False
                 while not code_cracked:
                     if self._is_out_of_turns():
+                        self._handle_finished_round()
                         break
                     print(f"\n--- TURN  {self.turn} ---")
 
@@ -115,6 +116,7 @@ class Mastermind:
                 code_cracked = False
                 while not code_cracked:
                     if self._is_out_of_turns():
+                        self._handle_finished_round()
                         break
                     print(f"\n--- TURN  {self.turn} ---")
 
